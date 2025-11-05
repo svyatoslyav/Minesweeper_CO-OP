@@ -1,7 +1,9 @@
-import pygame, sys
+import pygame, sys, os
 from button import Button
+import Game
 
 pygame.init()
+os.environ['SDL_VIDEO_CENTERED'] = '1' #Centers the game screen
 
 screen = pygame.display.set_mode((1280, 720))
 pygame.display.set_caption('Minesweeper Co-op')
@@ -21,9 +23,14 @@ def play():
         play_rect = play_text.get_rect(center=(640,260))
         screen.blit(play_text, play_rect)
 
-        play_back = Button(image=None, pos=(640, 460),
+        play_back = Button(image=None, pos=(740, 460),
                             text_input="Back", font=get_font(32), base_color="White", hovering_color="green")
 
+        play_game = Button(image=None, pos=(540, 460),
+                           text_input="Play", font=get_font(32), base_color="White", hovering_color="green")
+
+        play_game.changecolor(play_mouse_pos)
+        play_game.update(screen)
         play_back.changecolor(play_mouse_pos)
         play_back.update(screen)
 
@@ -34,6 +41,8 @@ def play():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if play_back.checkforinput(play_mouse_pos):
                     main_menu()
+                elif play_game.checkforinput(play_mouse_pos):
+                    Game.game_loop()
 
         pygame.display.update()
 
@@ -73,12 +82,12 @@ def main_menu():
         menu_text = get_font(100).render("Main Menu", True, (255, 255, 100))
         menu_rect = menu_text.get_rect(center = (640, 100))
 
-        play_button = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(640, 250),
-                            text_input="PLAY", font=get_font(100), base_color="#d7fcd4", hovering_color="white")
-        options_button = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 400),
-                                text_input="OPTIONS", font=get_font(100), base_color="#d7fcd4", hovering_color="white")
-        quit_button = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(640, 550),
-                                 text_input="QUIT", font=get_font(100), base_color="#d7fcd4", hovering_color="white")
+        play_button = Button(image=None, pos=(640, 250),
+                            text_input="PLAY", font=get_font(70), base_color="#d7fcd4", hovering_color="white")
+        options_button = Button(image=None, pos=(640, 400),
+                                text_input="OPTIONS", font=get_font(70), base_color="#d7fcd4", hovering_color="white")
+        quit_button = Button(image=None, pos=(640, 550),
+                                 text_input="QUIT", font=get_font(70), base_color="#d7fcd4", hovering_color="white")
 
         screen.blit(menu_text, menu_rect)
 
