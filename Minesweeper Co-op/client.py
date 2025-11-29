@@ -18,9 +18,10 @@ def send(message):
     client.send(msg_len)
     client.send(msg)
 
-while True:
+
+Connected = True
+while Connected:
     msg = input()
     if msg == MSG_DISCONNECT:
-        break
-    else:
-        send(msg)
+        Connected = False
+    send(msg)
