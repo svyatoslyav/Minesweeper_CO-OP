@@ -30,6 +30,13 @@ pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Кооперативний Сапер")
 
+try:
+    # Для вікна Pygame краще використовувати .png
+    program_icon = pygame.image.load(os.path.join("Sprites", "icon.ico"))
+    pygame.display.set_icon(program_icon)
+except Exception as e:
+    print(f"Не вдалося завантажити іконку: {e}")
+
 font_ui = pygame.font.SysFont('Arial', 20)
 font_large = pygame.font.SysFont('Arial', 32, bold=True)
 font_small = pygame.font.SysFont('Arial', 16)
@@ -370,3 +377,4 @@ while running:
     clock.tick(60)
 
 pygame.quit()
+
