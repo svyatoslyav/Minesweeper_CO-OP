@@ -7,6 +7,7 @@ import os
 import time
 import server
 import ctypes
+import sys
 
 # 2. Створюємо унікальний ID для програми
 # Можна написати будь-що, головне щоб рядок був унікальним
@@ -40,7 +41,7 @@ WIDTH, HEIGHT = 500, 500
 pygame.init()
 
 try:
-    icon_path = os.path.join("Sprites", "mine.png")
+    icon_path = os.path.join("Sprites", "icon.png")
     if os.path.exists(icon_path):
         program_icon = pygame.image.load(icon_path)
         pygame.display.set_icon(program_icon)
@@ -52,7 +53,7 @@ pygame.display.set_caption("Кооперативний Сапер")
 
 try:
     # Для вікна Pygame краще використовувати .png
-    program_icon = pygame.image.load(os.path.join("Sprites", "mine.png"))
+    program_icon = pygame.image.load(os.path.join("Sprites", "icon.png"))
     pygame.display.set_icon(program_icon)
 except Exception as e:
     print(f"Не вдалося завантажити іконку: {e}")
@@ -285,7 +286,7 @@ connection_result = connection_menu()
 
 if not connection_result:
     pygame.quit()
-    exit()
+    sys.exit()
 
 client = connection_result
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
