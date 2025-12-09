@@ -5,7 +5,18 @@ import pickle
 import threading
 import os
 import time
-import server  # Імпорт сервера
+import server
+import ctypes
+
+# 2. Створюємо унікальний ID для програми
+# Можна написати будь-що, головне щоб рядок був унікальним
+myappid = 'minesweeper.coop.game'
+
+# 3. Кажемо Windows використовувати цей ID
+try:
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+except ImportError:
+    pass
 
 # --- КОНСТАНТИ ---
 PORT = 5555
@@ -27,12 +38,21 @@ GRID_HEIGHT = 10
 WIDTH, HEIGHT = 500, 500
 
 pygame.init()
+
+try:
+    icon_path = os.path.join("Sprites", "mine.png")
+    if os.path.exists(icon_path):
+        program_icon = pygame.image.load(icon_path)
+        pygame.display.set_icon(program_icon)
+except Exception as e:
+    print(f"Icon error: {e}")
+
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Кооперативний Сапер")
 
 try:
     # Для вікна Pygame краще використовувати .png
-    program_icon = pygame.image.load(os.path.join("Sprites", "icon.ico"))
+    program_icon = pygame.image.load(os.path.join("Sprites", "mine.png"))
     pygame.display.set_icon(program_icon)
 except Exception as e:
     print(f"Не вдалося завантажити іконку: {e}")
@@ -377,4 +397,3 @@ while running:
     clock.tick(60)
 
 pygame.quit()
-
