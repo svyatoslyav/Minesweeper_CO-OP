@@ -6,6 +6,6 @@ kozyupa.s0807.f2.25@lntu.edu.ua
 Цалай Михайло (Game Developer)
 tsalay.m1910.f2.25@lntu.edu.ua
 Інструкція запуску:
-1. Завантажте minesweeper_CO-OP та розархівуйте
-2. Після розархівування відкрийте Minesweeper_CO-OP.exe
+1. Завантажте папку minesweeper_CO-OP
+2. Minesweeper_CO-OP.exe
 3. Гарної гри!
