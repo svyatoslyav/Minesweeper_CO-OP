@@ -17,6 +17,7 @@ MINES_COUNT = 40
 STATE_MENU = 0
 STATE_PLAYING = 1
 STATE_GAMEOVER = 2
+STATE_VICTORY = 3
 
 game_grid = []
 visible_grid = []
@@ -24,6 +25,24 @@ game_state = STATE_MENU
 clients = []
 server_socket = None
 
+def check_victory():
+    """Перевіряє, чи виграли гравці"""
+    safe_cells = (GRID_WIDTH * GRID_HEIGHT) - MINES_COUNT
+    opened_count = 0
+
+    for y in range(GRID_HEIGHT):
+        for x in range(GRID_WIDTH):
+            if visible_grid[y][x] is True:  # Якщо відкрито
+                opened_count += 1
+
+    return opened_count == safe_cells
+
+def auto_flag_mines():
+    """Ставить прапорці на всі міни при перемозі (для краси)"""
+    for y in range(GRID_HEIGHT):
+        for x in range(GRID_WIDTH):
+            if game_grid[y][x] == -1:
+                visible_grid[y][x] = 'F'
 
 def generate_grid():
     global game_grid, visible_grid, game_state
@@ -90,37 +109,47 @@ def handle_client(client_socket):
             if not data: break
             x, y, action = pickle.loads(data)
 
+            # --- START GAME (99) ---
             if action == 99 and game_state == STATE_MENU:
                 generate_grid()
                 game_state = STATE_PLAYING
                 broadcast()
                 continue
 
-            if action == 88 and game_state == STATE_GAMEOVER:
+            # --- RESTART (88) ---
+            # ЗМІНА: Дозволяємо рестарт і при поразці, і при перемозі
+            if action == 88 and (game_state == STATE_GAMEOVER or game_state == STATE_VICTORY):
                 generate_grid()
                 game_state = STATE_PLAYING
                 broadcast()
                 continue
 
             if game_state == STATE_PLAYING:
-                if action == 0:
+                if action == 0:  # Open
                     if visible_grid[y][x] == 'F': continue
                     if game_grid[y][x] == -1:
                         game_state = STATE_GAMEOVER
                         reveal_all_mines()
                     else:
                         reveal_cell(x, y)
-                elif action == 1:
+                        # --- ПЕРЕВІРКА НА ПЕРЕМОГУ ТУТ ---
+                        if check_victory():
+                            game_state = STATE_VICTORY
+                            auto_flag_mines()
+                        # ---------------------------------
+
+                elif action == 1:  # Flag
                     if visible_grid[y][x] == False:
                         visible_grid[y][x] = 'F'
                     elif visible_grid[y][x] == 'F':
                         visible_grid[y][x] = False
+
                 broadcast()
         except:
             break
+
     if client_socket in clients: clients.remove(client_socket)
     client_socket.close()
-
 
 # --- ОНОВЛЕНА ФУНКЦІЯ ЗАПУСКУ ---
 def start_server(w=20, h=15, m=40):
