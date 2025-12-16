@@ -25,6 +25,7 @@ CELL_SIZE = 32
 STATE_MENU = 0
 STATE_PLAYING = 1
 STATE_GAMEOVER = 2
+STATE_VICTORY = 3
 
 # Глобальні змінні
 client = None
@@ -353,6 +354,18 @@ def draw_ui():
         screen.blit(text, text.get_rect(center=(WIDTH / 2, HEIGHT / 2 - 30)))
         screen.blit(sub, sub.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 30)))
 
+    elif game_state == STATE_VICTORY:
+        s = pygame.Surface((WIDTH, HEIGHT))
+        s.set_alpha(150)
+        s.fill((0, 50, 0))  # Зелений фон
+        screen.blit(s, (0, 0))
+
+        text = font_large.render("VICTORY!", True, (0, 255, 0))
+        sub = font_ui.render("Press 'R' to Play Again", True, (255, 255, 255))
+
+        screen.blit(text, text.get_rect(center=(WIDTH / 2, HEIGHT / 2 - 30)))
+        screen.blit(sub, sub.get_rect(center=(WIDTH / 2, HEIGHT / 2 + 30)))
+
 
 clock = pygame.time.Clock()
 
@@ -369,7 +382,7 @@ while running:
                 except:
                     pass
 
-            if game_state == STATE_GAMEOVER and event.key == pygame.K_r:
+            if (game_state == STATE_GAMEOVER or game_state == STATE_VICTORY) and event.key == pygame.K_r:
                 try:
                     client.send(pickle.dumps((0, 0, 88)))
                 except:
